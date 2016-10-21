@@ -27,8 +27,7 @@
         <activity
             android:name=".VLCPlayerActivity"
             android:launchMode="singleInstance"
-            android:configChanges="orientation|screenSize"
-
+            android:screenOrientation="landscape"
             />
     </application>
 

@@ -48,7 +48,9 @@ public class VLCPlayerActivity extends AppCompatActivity {
 
     private int videoWidth;
     private int videoHight;
-
+    private boolean isNetworkMedia(){
+        return  true;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
@@ -122,7 +124,6 @@ public class VLCPlayerActivity extends AppCompatActivity {
                     }
                 }
             });
-
             LibVLC libvlc = LibVLCUtil.getLibVLC(null);
             surfaceHolder.setKeepScreenOn(true);
             mediaPlayer = new MediaPlayer(libvlc);
@@ -228,6 +229,13 @@ public class VLCPlayerActivity extends AppCompatActivity {
                 }
             };
             seekBarVolume.setOnSeekBarChangeListener(onVolumeSeekBarChangeListener);
+
+            if( isNetworkMedia()){
+                tvCurrentTime.setVisibility(View.INVISIBLE);
+                seekBarTime.setVisibility(View.INVISIBLE);
+                tvTotalTime.setVisibility(View.INVISIBLE);
+                seekBarVolume.setVisibility(View.INVISIBLE);
+            }
 
             tvFullScreen = (TextView) findViewById(R.id.tvFullScreen);
             tvFullScreen.setOnClickListener(new View.OnClickListener() {
