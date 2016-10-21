@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.os.Handler;
+import android.view.Window;
+import android.view.WindowManager;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -55,6 +58,10 @@ public class VLCPlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
+            //http://stackoverflow.com/questions/2868047/fullscreen-activity-in-android
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
             setContentView(R.layout.activity_vlc_player);
 
             Intent intent = getIntent();
@@ -66,8 +73,22 @@ public class VLCPlayerActivity extends AppCompatActivity {
             rlPlayer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isFullScreen) {
-                        rlHub.setVisibility(View.VISIBLE);
+                    //if (isFullScreen)
+                    {
+                        if (rlHub.getVisibility() == View.VISIBLE) {
+                            rlHub.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            rlHub.setVisibility(View.VISIBLE);
+                            //timer out invisable
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rlHub.setVisibility(View.GONE);
+                                }
+                            }, 3000);
+                        }
+
                     }
                 }
             });
@@ -230,12 +251,6 @@ public class VLCPlayerActivity extends AppCompatActivity {
             };
             seekBarVolume.setOnSeekBarChangeListener(onVolumeSeekBarChangeListener);
 
-            if( isNetworkMedia()){
-                tvCurrentTime.setVisibility(View.INVISIBLE);
-                seekBarTime.setVisibility(View.INVISIBLE);
-                tvTotalTime.setVisibility(View.INVISIBLE);
-                seekBarVolume.setVisibility(View.INVISIBLE);
-            }
 
             tvFullScreen = (TextView) findViewById(R.id.tvFullScreen);
             tvFullScreen.setOnClickListener(new View.OnClickListener() {
@@ -244,7 +259,8 @@ public class VLCPlayerActivity extends AppCompatActivity {
                     isFullScreen = !isFullScreen;
                     if (isFullScreen) {
                         tvFullScreen.setText("退出全屏");
-                        rlHub.setVisibility(View.GONE);
+                        //rlHub.setVisibility(View.GONE);
+                        rlHub.setVisibility(View.INVISIBLE);
                         WindowManager.LayoutParams params = getWindow().getAttributes();
                         params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
                         getWindow().setAttributes(params);
@@ -259,13 +275,32 @@ public class VLCPlayerActivity extends AppCompatActivity {
                     }
                 }
             });
-
+            if( isNetworkMedia()){
+                tvCurrentTime.setVisibility(View.INVISIBLE);
+                seekBarTime.setVisibility(View.INVISIBLE);
+                tvTotalTime.setVisibility(View.INVISIBLE);
+                seekBarVolume.setVisibility(View.INVISIBLE);
+                tvFullScreen.setVisibility(View.INVISIBLE);
+            }
+            //auto fullscreen
+            enterFullScreen();
             mediaPlayer.play();
         } catch (Exception e) {
             Log.d("VideoPlayer", e.toString());
         }
     }
+    private void enterFullScreen(){
+        isFullScreen = true;
 
+        tvFullScreen.setText("退出全屏");
+        //rlHub.setVisibility(View.GONE);
+        rlHub.setVisibility(View.INVISIBLE);
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        getWindow().setAttributes(params);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+    }
     private void pausePlay() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
