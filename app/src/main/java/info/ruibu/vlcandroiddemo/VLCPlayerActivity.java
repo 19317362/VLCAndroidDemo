@@ -74,7 +74,7 @@ public class VLCPlayerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //if (isFullScreen)
-                    {
+                    if (mediaPlayer.isPlaying()) {
                         if (rlHub.getVisibility() == View.VISIBLE) {
                             rlHub.setVisibility(View.INVISIBLE);
                         }
@@ -84,9 +84,16 @@ public class VLCPlayerActivity extends AppCompatActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    rlHub.setVisibility(View.GONE);
+                                    if(mediaPlayer.isPlaying()) {
+                                        rlHub.setVisibility(View.INVISIBLE);
+                                    }
                                 }
                             }, 3000);
+                        }
+                    }
+                    else {
+                        if (rlHub.getVisibility() == View.INVISIBLE) {
+                            rlHub.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -142,6 +149,14 @@ public class VLCPlayerActivity extends AppCompatActivity {
                     } else {
                         mediaPlayer.play();
                         imgPlay.setBackgroundResource(R.drawable.videoviewx_pause);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(mediaPlayer.isPlaying()) {
+                                    rlHub.setVisibility(View.INVISIBLE);
+                                }
+                            }
+                        }, 500);
                     }
                 }
             });
