@@ -56,15 +56,18 @@ public class MainActivity extends AppCompatActivity {
         btnRemoteVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (etRemoteVideo.getText().toString().equals("")) {
-                    tilRemoteVideo.setError("远程视频地址不能为空！");
-                    return;
+                String url;
+                url = etRemoteVideo.getText().toString();
+                if (url.equals("")) {
+                    //tilRemoteVideo.setError("远程视频地址不能为空！");
+                    //return;
+                    url ="http://streams.videolan.org/streams/mp4/Mr_MrsSmith-h264_aac.mp4";
                 }
 
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, VLCPlayerActivity.class);
                 intent.putExtra("VideoType", "Remote");
-                intent.putExtra("VideoUrl", etRemoteVideo.getText().toString());
+                intent.putExtra("VideoUrl", url);//etRemoteVideo.getText().toString());
                 startActivity(intent);
             }
         });
