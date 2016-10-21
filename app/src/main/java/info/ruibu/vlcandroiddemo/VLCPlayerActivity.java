@@ -128,6 +128,12 @@ public class VLCPlayerActivity extends AppCompatActivity {
             mediaPlayer = new MediaPlayer(libvlc);
             vlcVout = mediaPlayer.getVLCVout();
             callback = new IVLCVout.Callback() {
+
+                @Override
+                public void onHardwareAccelerationError(IVLCVout vlcVout)
+                {
+
+                }
                 @Override
                 public void onNewLayout(IVLCVout ivlcVout, int i, int i1, int i2, int i3, int i4, int i5) {
                     try {
@@ -176,6 +182,7 @@ public class VLCPlayerActivity extends AppCompatActivity {
             mediaPlayer.setMedia(media);
 
             eventListener = new MediaPlayer.EventListener() {
+
                 @Override
                 public void onEvent(MediaPlayer.Event event) {
                     try {
